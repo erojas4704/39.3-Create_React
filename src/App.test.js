@@ -1,8 +1,21 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
+import Board from './Board';
+import Light from './Light';
 
-test('renders learn react link', () => {
+test('renders', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+});
+
+test('renders cells properly', () => {
+  render(<Light />);
+});
+
+test('renders board properly', () => {
+  render(<Board />);
+});
+
+test('compares against snapshot', () => {
+  const { asFragment } = render(<App />);
+  expect(asFragment).toMatchSnapshot();
 });

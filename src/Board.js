@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Light from "./Light";
+import "./Board.css";
 
 const generate2dArray = (width, height, probabilityLightIsOn) => {
     const arr = [];
@@ -18,8 +19,8 @@ const Board = ({
     probablityLightIsOn = 0.5
 }) => {
     let [lights, setLights] = useState(generate2dArray(width, height, probablityLightIsOn));
+    let [gameWon, setGameWon] = useState(false);
 
-    console.log(lights);
     function toggleAdjacentLights(origArray, x, y) {
         let alteredArray = [...origArray];
         alteredArray[x][y] = !alteredArray[x][y];
@@ -27,14 +28,29 @@ const Board = ({
         if (x < width - 1) alteredArray[x + 1][y] = !alteredArray[x + 1][y];
         if (y > 0) alteredArray[x][y - 1] = !alteredArray[x][y - 1];
         if (y < height - 1) alteredArray[x][y + 1] = !alteredArray[x][y + 1];
-        console.log(alteredArray);
         return alteredArray;
+    }
+
+    function checkGameWon(array) {
+        for (let x = 0; x < width; x++) {
+            for (let y = 0; y < height; y++) {
+                if (array[x][y] === true) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 
     const onToggle = (x, y, on) => {
         //Toggle adjacent lights
-        setLights(toggleAdjacentLights(lights, x, y));
+        let newLights = toggleAdjacentLights(lights, x, y);
+        setLights(newLights);
+        if (checkGameWon(newLights)) {
+            setGameWon(true);
+            console.log(`Game won!`);
+        };
     };
 
 
@@ -56,7 +72,8 @@ const Board = ({
 
     return (
         <div className="board">
-            {grid.map((row, y) => {
+            <h3>Lights Out</h3>
+            {gameWon ? (<div>You win forever</div>) : grid.map((row, y) => {
                 return (
                     <div key={y}>
                         {row}

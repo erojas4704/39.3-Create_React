@@ -1,16 +1,15 @@
 import { useState } from "react";
+import "./Light.css";
 
-const Light = ({ on,  onToggle, probabilityLightIsOn = 0.5 }) => {
-    let [isOn, setIsOn] = useState( on !== undefined? on : probabilityLightIsOn > Math.random());
-
+const Light = ({ on, onToggle, probabilityLightIsOn = 0.5, x, y }) => {
     const toggle = () => {
-        setIsOn(!isOn);
-        onToggle();
+        onToggle(x, y, on);
     }
 
     return (
-        <span key={this} className="light">
-            <button onClick={toggle}>{isOn ? 'Off' : 'On'}</button>
+        <span>
+            <button onClick={toggle} className={on ? "light on" : "light off"}>
+            </button>
         </span>
     );
 };

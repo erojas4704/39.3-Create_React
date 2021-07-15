@@ -1,25 +1,54 @@
+import { useState } from "react";
 import Light from "./Light";
+
+const generate2dArray = (width, height, probabilityLightIsOn) => {
+    const arr = [];
+    for (let x = 0; x < width; x++) {
+        arr[x] = [];
+        for (let y = 0; y < height; y++) {
+            arr[x][y] = Math.random() > probabilityLightIsOn
+        }
+    }
+    return arr;
+}
 
 const Board = ({
     width = 3,
     height = 3,
     probablityLightIsOn = 0.5
 }) => {
-    let grid = [];
+    let [lights, setLights] = useState(generate2dArray(width, height, probablityLightIsOn));
 
-    const onToggle = (light) => {
+    console.log(lights);
+    function toggleAdjacentLights(origArray, x, y) {
+        let alteredArray = [...origArray];
+        alteredArray[x][y] = !alteredArray[x][y];
+        if (x > 0) alteredArray[x - 1][y] = !alteredArray[x - 1][y];
+        if (x < width - 1) alteredArray[x + 1][y] = !alteredArray[x + 1][y];
+        if (y > 0) alteredArray[x][y - 1] = !alteredArray[x][y - 1];
+        if (y < height - 1) alteredArray[x][y + 1] = !alteredArray[x][y + 1];
+        console.log(alteredArray);
+        return alteredArray;
+    }
+
+
+    const onToggle = (x, y, on) => {
         //Toggle adjacent lights
-        console.log("toggle board whatever", grid);
+        setLights(toggleAdjacentLights(lights, x, y));
     };
 
 
+    let grid = [];
     for (let y = 0; y < height; y++) {
         grid.push([]);
         for (let x = 0; x < width; x++) {
             grid[y].push(
                 <Light
+                    key={`${x}${y}`}
                     onToggle={onToggle}
-                    probablityLightIsOn={probablityLightIsOn}
+                    on={lights[x][y]}
+                    x={x}
+                    y={y}
                 />
             );
         }
